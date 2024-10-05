@@ -1,16 +1,23 @@
-#include <windows.h>
-#include <tchar.h>
-#include <stdio.h>
-#include <strsafe.h>
+//#include <windows.h>
+//#include <tchar.h>
+//#include <stdio.h>
+//#include <strsafe.h>
 
-#include "SimConnect.h"
+//#include "SimConnect.h"
+#include "SimConnectClient.h"
 #include <iostream>
-
-HANDLE hSimConnect = NULL;
+#include <conio.h>
 
 int main(void)
 {
-    SimConnect_Open(&hSimConnect, "Throttle Control", NULL, 0, 0, 0);   //example of a command
-    std::cout << "Hello World!" << std::endl;
+    int userInput;
+    std::cout << "SimConnect Client version 0.2.0" << std::endl;
+
+    do
+    {
+        userInput = _getch();
+        std::cout << static_cast<char>(userInput) << "_,_" << userInput << std::endl;
+    } while (userInput != KbCodes::Kb_Ctrl_C);
+    
     return 0;
 }
