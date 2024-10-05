@@ -31,7 +31,7 @@ private:
     GUID hidGuid{ CLSID_NULL };  // pointer to a caller-allocated GUID buffer that the routine uses to return the device interface GUID for HIDClass devices
     HANDLE fileHandle{ INVALID_HANDLE_VALUE };
     std::string VidPid;
-    std::wstring collectionStr;
+    std::string collectionStr;
     static const size_t ReceiveBufferSize = 260;
     static const size_t SendBufferSize = 65;
     const DWORD HidBufferSize = collection ? 64 : 65; // report id (!=0) + 63 bytes of payload or report id (==0) + 64 bytes of payload

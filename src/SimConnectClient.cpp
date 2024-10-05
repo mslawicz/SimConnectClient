@@ -1,8 +1,8 @@
 #include "Console.h"
-//#include "HidDevice.h"
+#include "HidDevice.h"
 //#include "Simulator.h"
 #include <iostream>
-//#include <thread>
+#include <thread>
 //#include <functional>
 
 #define VENDOR_ID   0x483
@@ -14,17 +14,17 @@ int main()
     Console::getInstance().log(LogLevel::Always, "SimConnect Client v2.0");
     Console::getInstance().log(LogLevel::Always, "type 'help' for the list of commands");
 
-    //HidDevice joystickLink(VENDOR_ID, PRODUCT_ID, REPORT_ID);
-    //Simulator::getInstance().setJoystickLink(&joystickLink);
-    //joystickLink.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
+    HidDevice hidDevice(VENDOR_ID, PRODUCT_ID, REPORT_ID);
+    //Simulator::getInstance().sethidDevice(&hidDevice);
+    //hidDevice.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
-    //std::thread joystickLinkThread(&HidDevice::handler, &joystickLink);
+    std::thread hidDeviceThread(&HidDevice::handler, &hidDevice);
     //std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
 
     Console::getInstance().handler();
 
     //simulatorThread.join();
-    //joystickLinkThread.join();
+    hidDeviceThread.join();
 
     return 0;
 }

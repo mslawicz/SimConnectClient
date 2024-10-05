@@ -20,12 +20,12 @@ HidDevice::HidDevice(USHORT VID, USHORT PID, uint8_t collection) :
     std::stringstream ss;
     ss << std::hex << "USB HID device with VID=" << VID << " PID=" << PID;
     VidPid = ss.str();
-    collectionStr = L"&col";
+    collectionStr = "&col";
     if (collection < 10)
     {
-        collectionStr += L"0";
+        collectionStr += "0";
     }
-    collectionStr += std::to_wstring(collection);
+    collectionStr += std::to_string(collection);
 }
 
 HidDevice::~HidDevice()
@@ -133,8 +133,8 @@ bool HidDevice::openConnection()
                 securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
                 securityAttributes.bInheritHandle = true;
 
-                //XXX std::wstring ws((wchar_t*)(pDeviceInterfaceDetailData->DevicePath));
-                Console::getInstance().log(LogLevel::Debug, "checking " + std::string(pDeviceInterfaceDetailData->DevicePath));
+                std::string devicePath(pDeviceInterfaceDetailData->DevicePath);
+                Console::getInstance().log(LogLevel::Debug, "checking " + devicePath);
 
                 // Creates or opens a file or I/O device
                 // query metadata such as file, directory, or device attributes without accessing device 
@@ -151,7 +151,7 @@ bool HidDevice::openConnection()
                         CloseHandle(fileHandle);
                         if ((attributes.VendorID == VID) &&
                             (attributes.ProductID == PID) &&
-                            ((collection == 0) || wcsstr((wchar_t*)pDeviceInterfaceDetailData->DevicePath, collectionStr.c_str())))
+                            ((collection == 0) || (devicePath.find(collectionStr) != std::string::npos)))
                         {
                             // device with proper VID, PID and collection found (or collection == 0)
                             // Creates or opens a file or I/O device - this time for read/write operations in asynchronous mode
