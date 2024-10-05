@@ -5,7 +5,9 @@ set(MSFS_SDK "C:/MSFS SDK")
 
 add_executable(SimConnectClient 
     src/SimConnectClient.cpp
-    src/SimConnectHandler.cpp
+    src/Simulator.cpp
+    src/HidDevice.cpp
+    src/Console.cpp
 )
 
 target_include_directories(SimConnectClient PRIVATE

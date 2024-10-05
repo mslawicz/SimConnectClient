@@ -1,25 +1,28 @@
-#include "SimConnectClient.h"
-#include "SimConnectHandler.h"
+#include "Console.h"
+#include "HidDevice.h"
+#include "Simulator.h"
 #include <iostream>
-#include <conio.h>
 #include <thread>
+#include <functional>
 
-volatile bool SimConnectClientQuit = false;
+#define VENDOR_ID   0x483
+#define PRODUCT_ID  0x5712  // HID joystick + 2
+#define REPORT_ID   0x02
 
-int main(void)
+int main()
 {
-    int userInput;
-    std::thread SimConnectHandlerThread(SimConnectHandler);
-    std::cout << "SimConnect Client version 0.2.0" << std::endl;
+    Console::getInstance().log(LogLevel::Always, "SimConnect Client v2.0");
+    Console::getInstance().log(LogLevel::Always, "type 'help' for the list of commands");
 
-    do
-    {
-        userInput = _getch();
-        std::cout << static_cast<char>(userInput) << "_,_" << userInput << std::endl;
-    } while (userInput != KbCodes::Kb_Ctrl_C);
+    USBHID joystickLink(VENDOR_ID, PRODUCT_ID, REPORT_ID);
+    Simulator::getInstance().setJoystickLink(&joystickLink);
+    joystickLink.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
-    SimConnectClientQuit = true;
-    SimConnectHandlerThread.join();
-    
-    return 0;
+    std::thread joystickLinkThread(&USBHID::handler, &joystickLink);
+    std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
+
+    Console::getInstance().handler();
+
+    simulatorThread.join();
+    joystickLinkThread.join();
 }
