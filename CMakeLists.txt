@@ -5,19 +5,19 @@ set(MSFS_SDK "C:/MSFS SDK")
 
 add_executable(SimConnectClient 
     src/SimConnectClient.cpp
-    src/Simulator.cpp
-    src/HidDevice.cpp
+#    src/Simulator.cpp
+#    src/HidDevice.cpp
     src/Console.cpp
 )
 
 target_include_directories(SimConnectClient PRIVATE
-    "${MSFS_SDK}/SimConnect SDK/include"
+#    "${MSFS_SDK}/SimConnect SDK/include"
 )
 
 target_link_directories(SimConnectClient PRIVATE
-"${MSFS_SDK}/SimConnect SDK/lib"
+#    "${MSFS_SDK}/SimConnect SDK/lib"
 )
 
 target_link_libraries(SimConnectClient PRIVATE
-    "${MSFS_SDK}/SimConnect SDK/lib/SimConnect.lib"
+#    "${MSFS_SDK}/SimConnect SDK/lib/SimConnect.lib"
 )
