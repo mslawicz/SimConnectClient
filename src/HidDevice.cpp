@@ -232,7 +232,7 @@ bool HidDevice::enableReception(void)
         DWORD lastError = GetLastError();
         if ((result != 0) && (lastError != 997))
         {
-            // when OK, expected values are res=0, cnt=0 and err=997
+            // when OK, expected values are result=0, receivedDataCount=HidBufferSize or 0 and err=997
             std::stringstream ss;
             ss << "USB read result=" << result << " cnt=" << receivedDataCount << " error=" << GetLastError();
             Console::getInstance().log(LogLevel::Warning, ss.str());
