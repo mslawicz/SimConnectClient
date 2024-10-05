@@ -1,8 +1,15 @@
 #include "SimConnectHandler.h"
 #include "SimConnectClient.h"
+#include <windows.h>
+#include <tchar.h>
+#include <stdio.h>
+#include <strsafe.h>
+#include "SimConnect.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
+
+HANDLE hSimConnect = NULL;
 
 void SimConnectHandler(void)
 {

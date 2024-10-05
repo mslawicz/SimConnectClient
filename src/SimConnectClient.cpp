@@ -1,9 +1,3 @@
-//#include <windows.h>
-//#include <tchar.h>
-//#include <stdio.h>
-//#include <strsafe.h>
-
-//#include "SimConnect.h"
 #include "SimConnectClient.h"
 #include "SimConnectHandler.h"
 #include <iostream>
