@@ -23,7 +23,7 @@ public:
     static Simulator& getInstance();
     void handler(void);
     static void CALLBACK dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext);
-    void setJoystickLink(USBHID* pLink) { pJoystickLink = pLink; }
+    void setJoystickLink(HidDevice* pLink) { pJoystickLink = pLink; }
     void parseReceivedData(std::vector<uint8_t> receivedData);      // parse received data fron joystick link
     void displaySimData();
     void displayReceivedJoystickData();
@@ -102,7 +102,7 @@ private:
         double stabTakeoffAirSpeed; // speed / windshield speed referenced to design takeoff speed
     };
     std::set<DWORD> dwIDs;  // set of received SimConnect dwIDs
-    USBHID* pJoystickLink{ nullptr };   // pointer to USB HID joystick device
+    HidDevice* pJoystickLink{ nullptr };   // pointer to USB HID joystick device
     std::chrono::steady_clock::time_point lastSimDataTime;  // remembers time of last simData reception from server
     std::chrono::steady_clock::time_point lastJoystickDataTime;  // remembers time of last joystick data reception
     SimDataRead simDataRead;    // current state of simData

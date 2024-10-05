@@ -14,11 +14,11 @@ int main()
     Console::getInstance().log(LogLevel::Always, "SimConnect Client v2.0");
     Console::getInstance().log(LogLevel::Always, "type 'help' for the list of commands");
 
-    USBHID joystickLink(VENDOR_ID, PRODUCT_ID, REPORT_ID);
+    HidDevice joystickLink(VENDOR_ID, PRODUCT_ID, REPORT_ID);
     Simulator::getInstance().setJoystickLink(&joystickLink);
     joystickLink.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
-    std::thread joystickLinkThread(&USBHID::handler, &joystickLink);
+    std::thread joystickLinkThread(&HidDevice::handler, &joystickLink);
     std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
 
     Console::getInstance().handler();

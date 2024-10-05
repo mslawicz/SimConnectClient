@@ -8,7 +8,7 @@
 #include <thread>
 #include <chrono>
 
-USBHID::USBHID(USHORT VID, USHORT PID, uint8_t collection) :
+HidDevice::HidDevice(USHORT VID, USHORT PID, uint8_t collection) :
     VID(VID),
     PID(PID),
     collection(collection)
@@ -28,12 +28,12 @@ USBHID::USBHID(USHORT VID, USHORT PID, uint8_t collection) :
     collectionStr += std::to_wstring(collection);
 }
 
-USBHID::~USBHID()
+HidDevice::~HidDevice()
 {
 }
 
 // USB link handler to be called in a separate thread
-void USBHID::handler()
+void HidDevice::handler()
 {
     // stay in this loop until the user requests quit
     while (!Console::getInstance().isQuitRequest())
@@ -80,7 +80,7 @@ void USBHID::handler()
 }
 
 // find the USB device and open the connection to it
-bool USBHID::openConnection()
+bool HidDevice::openConnection()
 {
     isOpen = false;
     bool found = false;     // mark that the device has not been found yet
@@ -133,8 +133,8 @@ bool USBHID::openConnection()
                 securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
                 securityAttributes.bInheritHandle = true;
 
-                std::wstring ws(pDeviceInterfaceDetailData->DevicePath);
-                Console::getInstance().log(LogLevel::Debug, "checking " + std::string(ws.begin(), ws.end()));
+                //XXX std::wstring ws((wchar_t*)(pDeviceInterfaceDetailData->DevicePath));
+                Console::getInstance().log(LogLevel::Debug, "checking " + std::string(pDeviceInterfaceDetailData->DevicePath));
 
                 // Creates or opens a file or I/O device
                 // query metadata such as file, directory, or device attributes without accessing device 
@@ -151,7 +151,7 @@ bool USBHID::openConnection()
                         CloseHandle(fileHandle);
                         if ((attributes.VendorID == VID) &&
                             (attributes.ProductID == PID) &&
-                            ((collection == 0) || wcsstr(pDeviceInterfaceDetailData->DevicePath, collectionStr.c_str())))
+                            ((collection == 0) || wcsstr((wchar_t*)pDeviceInterfaceDetailData->DevicePath, collectionStr.c_str())))
                         {
                             // device with proper VID, PID and collection found (or collection == 0)
                             // Creates or opens a file or I/O device - this time for read/write operations in asynchronous mode
@@ -206,7 +206,7 @@ bool USBHID::openConnection()
 
 
 // closes connection to the device
-void USBHID::closeConnection()
+void HidDevice::closeConnection()
 {
     if (fileHandle != INVALID_HANDLE_VALUE)
     {
@@ -224,7 +224,7 @@ void USBHID::closeConnection()
 
 // starts reception in asynchronous mode
 // this way it enables reception of the incoming data
-bool USBHID::enableReception(void)
+bool HidDevice::enableReception(void)
 {
     if (isOpen && (fileHandle != INVALID_HANDLE_VALUE))
     {
@@ -247,7 +247,7 @@ bool USBHID::enableReception(void)
 }
 
 // disable USB reception
-void USBHID::disableReception(void)
+void HidDevice::disableReception(void)
 {
     auto result = ResetEvent(receiveOverlappedData.hEvent);  // clears the reception event (no signals until enabled again)
     Console::getInstance().log(LogLevel::Info, "USB reading disabled with code " + std::to_string(result));
@@ -255,13 +255,13 @@ void USBHID::disableReception(void)
 
 // return true if received data is signaled
 // this call doesn't reset the signal
-bool USBHID::isDataReceived(void)
+bool HidDevice::isDataReceived(void)
 {
     return (WaitForSingleObject(receiveOverlappedData.hEvent, 0) == WAIT_OBJECT_0);
 }
 
 // send data to USB HID device
-bool USBHID::sendData(uint8_t* dataToSend)
+bool HidDevice::sendData(uint8_t* dataToSend)
 {
     if (isOpen && (fileHandle != INVALID_HANDLE_VALUE))
     {

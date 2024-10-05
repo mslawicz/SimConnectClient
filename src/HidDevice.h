@@ -9,11 +9,11 @@
 #include <functional>
 
 
-class USBHID
+class HidDevice
 {
 public:
-    USBHID(USHORT VID, USHORT PID, uint8_t collection);
-    ~USBHID();
+    HidDevice(USHORT VID, USHORT PID, uint8_t collection);
+    ~HidDevice();
     void handler();
     bool openConnection();
     void closeConnection();
