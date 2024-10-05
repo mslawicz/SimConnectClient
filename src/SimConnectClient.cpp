@@ -1,6 +1,6 @@
 #include "Console.h"
 #include "HidDevice.h"
-//#include "Simulator.h"
+#include "Simulator.h"
 #include <iostream>
 #include <thread>
 //#include <functional>
