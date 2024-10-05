@@ -34,7 +34,7 @@ private:
     std::string collectionStr;
     static const size_t ReceiveBufferSize = 260;
     static const size_t SendBufferSize = 65;
-    const DWORD HidBufferSize = collection ? 64 : 65; // report id (!=0) + 63 bytes of payload or report id (==0) + 64 bytes of payload
+    const DWORD HidBufferSize = 5; // max 64 bytes of payload including report ID if used (collection not equal 0)
     uint8_t receiveBuffer[ReceiveBufferSize];
     DWORD receivedDataCount;
     OVERLAPPED receiveOverlappedData;
