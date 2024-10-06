@@ -26,7 +26,7 @@ Simulator::~Simulator()
 // simulator handler function
 void Simulator::handler(void)
 {
-    // HRESULT hResult;
+    HRESULT hResult;
 
     while (!Console::getInstance().isQuitRequest())
     {
@@ -83,19 +83,19 @@ void Simulator::handler(void)
         std::this_thread::sleep_for(threadSleepTime);
     }
 
-    // if (hSimConnect)
-    // {
-    //     // request closing connection with server
-    //     hResult = SimConnect_Close(hSimConnect);
-    //     if (hResult == S_OK)
-    //     {
-    //         Console::getInstance().log(LogLevel::Info, "connection to Simconnect server closed");
-    //     }
-    //     else
-    //     {
-    //         Console::getInstance().log(LogLevel::Error, "failed to disconnect from Simconnect server");
-    //     }
-    // }
+    if (hSimConnect)
+    {
+        // request closing connection with server
+        hResult = SimConnect_Close(hSimConnect);
+        if (hResult == S_OK)
+        {
+            Console::getInstance().log(LogLevel::Info, "connection to Simconnect server closed");
+        }
+        else
+        {
+            Console::getInstance().log(LogLevel::Error, "failed to disconnect from Simconnect server");
+        }
+    }
 }
 
 // void Simulator::dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)

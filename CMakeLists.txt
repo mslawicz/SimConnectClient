@@ -3,28 +3,31 @@ project(SimConnectClient VERSION 0.0.1 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(MSFS_SDK "C:/MSFS SDK")
 
-add_executable(SimConnectClient 
+set(PROJECT_NAME SimConnectClient)
+
+add_executable(${PROJECT_NAME} 
     src/SimConnectClient.cpp
     src/Simulator.cpp
     src/HidDevice.cpp
     src/Console.cpp
 )
 
-target_include_directories(SimConnectClient PRIVATE
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH"
+    "_DEBUG"
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
     "${MSFS_SDK}/SimConnect SDK/include"
 )
 
-target_link_directories(SimConnectClient PRIVATE
-    "${MSFS_SDK}/SimConnect SDK/lib"
+target_link_directories(${PROJECT_NAME} PRIVATE
+    "${MSFS_SDK}/SimConnect SDK/lib/static"
 )
 
-target_link_libraries(SimConnectClient PUBLIC
-    "${MSFS_SDK}/SimConnect SDK/lib/SimConnect.lib"
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    "${MSFS_SDK}/SimConnect SDK/lib/static/SimConnect_debug.lib"
     shlwapi.lib
     user32.lib
     Ws2_32.lib
 )
-
-# add_dependencies(SimConnectClient
-#     "${MSFS_SDK}/SimConnect SDK/lib/SimConnect.lib"
-# )
