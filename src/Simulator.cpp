@@ -1,6 +1,6 @@
 #include "Simulator.h"
 #include "Console.h"
-// #include "Convert.h"
+#include "Convert.h"
 #include <thread>
 #include <sstream>
 #include <iostream>
@@ -30,55 +30,55 @@ void Simulator::handler(void)
 
     while (!Console::getInstance().isQuitRequest())
     {
-    //     // manage connection to simulator
-    //     if (hSimConnect == nullptr)
-    //     {
-    //         // not connected to simulator - try to connect
-    //         hResult = SimConnect_Open(&hSimConnect, "MsSimConnect", nullptr, 0, 0, 0);
-    //         if (hResult == S_OK)
-    //         {
-    //             Console::getInstance().log(LogLevel::Info, "connecting to SimConnect server");
-    //             threadSleepTime = std::chrono::milliseconds(NormalSleep);
-    //             simConnectResponseError = false;
-    //         }
-    //         else
-    //         {
-    //             if (!simConnectResponseError)   // the flag assures single-shot warning display
-    //             {
-    //                 Console::getInstance().log(LogLevel::Warning, "no response from SimConnect server");
-    //                 simConnectResponseError = true;
-    //             }
-    //         }
-    //     }
-    //     else
-    //     {
-    //         // connected to simulator - dispatch
-    //         SimConnect_CallDispatch(hSimConnect, &Simulator::dispatchWrapper, nullptr);
-    //     }
+        // manage connection to simulator
+        if (hSimConnect == nullptr)
+        {
+            // not connected to simulator - try to connect
+            hResult = SimConnect_Open(&hSimConnect, "MsSimConnect", nullptr, 0, 0, 0);
+            if (hResult == S_OK)
+            {
+                Console::getInstance().log(LogLevel::Info, "connecting to SimConnect server");
+                threadSleepTime = std::chrono::milliseconds(NormalSleep);
+                simConnectResponseError = false;
+            }
+            else
+            {
+                if (!simConnectResponseError)   // the flag assures single-shot warning display
+                {
+                    Console::getInstance().log(LogLevel::Warning, "no response from SimConnect server");
+                    simConnectResponseError = true;
+                }
+            }
+        }
+        else
+        {
+            // connected to simulator - dispatch
+            SimConnect_CallDispatch(hSimConnect, &Simulator::dispatchWrapper, nullptr);
+        }
 
-    //     //send data to HID device
-    //     if (pHidDeviceLink &&
-    //         (std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceSendTime).count() > 0.01))
-    //     {
-    //         uint8_t* pBuffer = hidSendBuffer;
-    //         placeData<float>(static_cast<float>(simDataRead.aileronPosition - simDataRead.yokeXindicator), pBuffer);    // yoke X reference position
-    //         placeData<uint32_t>(simDataFlags, pBuffer);     // 32-bit data flags
-    //         placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.wingAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft indicated speed referenced to cruise speed <0,255>
-    //         placeData<float>(static_cast<float>(simDataRead.rotationAccBodyX), pBuffer);   // rotation acceleration body X for yoke forces
-    //         placeData<float>(static_cast<float>(simDataRead.rotationAccBodyY), pBuffer);   // rotation acceleration body Y for yoke forces
-    //         placeData<float>(static_cast<float>(simDataRead.rotationAccBodyZ), pBuffer);   // rotation acceleration body Z for yoke forces
-    //         placeData<uint8_t>(static_cast<uint8_t>(simDataRead.engineType), pBuffer);     // enumerated engine type
-    //         placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.flapsPosPct, 0U, 0xFFU), pBuffer);  // percentage of flaps deflection <0,255>
-    //         placeData<uint8_t>(scale<double, uint8_t>(0, 100.0, simDataCalculated.propellerPct, 0U, 0xFFU), pBuffer);  // percentage of max propeller rpm <0,255>
-    //         placeData<float>(static_cast<float>(simDataRead.elevatorTrimPCT), pBuffer);   // for yoke Y reference position
-    //         placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.stabilizerAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft stabilizer indicated speed referenced to cruise speed <0,255>
-    //         placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.stabTakeoffAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft stabilizer indicated speed referenced to takeoff speed <0,255>
-    //         placeData<char>('S', pBuffer);
-    //         placeData<char>('I', pBuffer);
-    //         placeData<char>('M', pBuffer);
-    //         pHidDeviceLink->sendData(hidSendBuffer);
-    //         lastHidDeviceSendTime = std::chrono::steady_clock::now();
-    //     }
+        //send data to HID device
+        if (pHidDeviceLink &&
+            (std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceSendTime).count() > 0.01))
+        {
+            uint8_t* pBuffer = hidSendBuffer;
+            placeData<float>(static_cast<float>(simDataRead.aileronPosition - simDataRead.yokeXindicator), pBuffer);    // yoke X reference position
+            placeData<uint32_t>(simDataFlags, pBuffer);     // 32-bit data flags
+            placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.wingAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft indicated speed referenced to cruise speed <0,255>
+            placeData<float>(static_cast<float>(simDataRead.rotationAccBodyX), pBuffer);   // rotation acceleration body X for yoke forces
+            placeData<float>(static_cast<float>(simDataRead.rotationAccBodyY), pBuffer);   // rotation acceleration body Y for yoke forces
+            placeData<float>(static_cast<float>(simDataRead.rotationAccBodyZ), pBuffer);   // rotation acceleration body Z for yoke forces
+            placeData<uint8_t>(static_cast<uint8_t>(simDataRead.engineType), pBuffer);     // enumerated engine type
+            placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.flapsPosPct, 0U, 0xFFU), pBuffer);  // percentage of flaps deflection <0,255>
+            placeData<uint8_t>(scale<double, uint8_t>(0, 100.0, simDataCalculated.propellerPct, 0U, 0xFFU), pBuffer);  // percentage of max propeller rpm <0,255>
+            placeData<float>(static_cast<float>(simDataRead.elevatorTrimPCT), pBuffer);   // for yoke Y reference position
+            placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.stabilizerAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft stabilizer indicated speed referenced to cruise speed <0,255>
+            placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.stabTakeoffAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft stabilizer indicated speed referenced to takeoff speed <0,255>
+            placeData<char>('S', pBuffer);
+            placeData<char>('I', pBuffer);
+            placeData<char>('M', pBuffer);
+            pHidDeviceLink->sendData(hidSendBuffer);
+            lastHidDeviceSendTime = std::chrono::steady_clock::now();
+        }
 
         std::this_thread::sleep_for(threadSleepTime);
     }
@@ -98,184 +98,184 @@ void Simulator::handler(void)
     }
 }
 
-// void Simulator::dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)
-// {
-//     Simulator::getInstance().dispatch(pData, cbData, pContext);
-// }
+void Simulator::dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)
+{
+    Simulator::getInstance().dispatch(pData, cbData, pContext);
+}
 
-// // dispatch data from simulator
-// void Simulator::dispatch(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)
-// {
-//     std::stringstream ss;
-//     // check SimConnect message ID
-//     switch (pData->dwID)
-//     {
-//     case SIMCONNECT_RECV_ID_OPEN:
-//         // connection process is complete
-//         {
-//             SIMCONNECT_RECV_OPEN* pOpenData = static_cast<SIMCONNECT_RECV_OPEN*>(pData);
-//             ss << "connected to SimConnect v" << pOpenData->dwSimConnectVersionMajor << "." << pOpenData->dwSimConnectVersionMinor;
-//             Console::getInstance().log(LogLevel::Info, ss.str());
+// dispatch data from simulator
+void Simulator::dispatch(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext)
+{
+    std::stringstream ss;
+    // check SimConnect message ID
+    switch (pData->dwID)
+    {
+    case SIMCONNECT_RECV_ID_OPEN:
+        // connection process is complete
+        {
+            SIMCONNECT_RECV_OPEN* pOpenData = static_cast<SIMCONNECT_RECV_OPEN*>(pData);
+            ss << "connected to SimConnect v" << pOpenData->dwSimConnectVersionMajor << "." << pOpenData->dwSimConnectVersionMinor;
+            Console::getInstance().log(LogLevel::Info, ss.str());
 
-//             subscribe();
-//             dataRequest();
-//         }
-//         break;
+            subscribe();
+            dataRequest();
+        }
+        break;
 
-//     case SIMCONNECT_RECV_ID_QUIT:
-//         // connection closed
-//         Console::getInstance().log(LogLevel::Info, "SimConnect server connection closed");
-//         hSimConnect = nullptr;
-//         setSimdataFlag(SimDataFlag::SimDataValid, false);    //SimConnect data invalid
-//         threadSleepTime = std::chrono::milliseconds(LongSleep);
-//         break;
+    case SIMCONNECT_RECV_ID_QUIT:
+        // connection closed
+        Console::getInstance().log(LogLevel::Info, "SimConnect server connection closed");
+        hSimConnect = nullptr;
+        setSimdataFlag(SimDataFlag::SimDataValid, false);    //SimConnect data invalid
+        threadSleepTime = std::chrono::milliseconds(LongSleep);
+        break;
 
-//     case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
-//         // sim data received
-//         procesSimData(pData);
-//         setSimdataFlag(SimDataFlag::SimDataValid, true);    //SimConnect data valid
-//         threadSleepTime = std::chrono::milliseconds(ShortSleep);
-//         break;
+    case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
+        // sim data received
+        procesSimData(pData);
+        setSimdataFlag(SimDataFlag::SimDataValid, true);    //SimConnect data valid
+        threadSleepTime = std::chrono::milliseconds(ShortSleep);
+        break;
 
-//     case SIMCONNECT_RECV_ID_NULL:
-//         // no more data
-//         threadSleepTime = std::chrono::milliseconds(NormalSleep);
-//         break;
+    case SIMCONNECT_RECV_ID_NULL:
+        // no more data
+        threadSleepTime = std::chrono::milliseconds(NormalSleep);
+        break;
 
-//     default:
-//         if (dwIDs.find(pData->dwID) != dwIDs.end())
-//         {
-//             // a new unknown dwID received
-//             ss << "unknown dwID=" << pData->dwID << " received";
-//             Console::getInstance().log(LogLevel::Debug, ss.str());
-//             dwIDs.insert(pData->dwID);
-//         }
-//         break;
-//     }
-// }
+    default:
+        if (dwIDs.find(pData->dwID) != dwIDs.end())
+        {
+            // a new unknown dwID received
+            ss << "unknown dwID=" << pData->dwID << " received";
+            Console::getInstance().log(LogLevel::Debug, ss.str());
+            dwIDs.insert(pData->dwID);
+        }
+        break;
+    }
+}
 
 // subscribe to simulator data reception
 void Simulator::subscribe(void)
 {
-    // // aircraft parameters
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "AILERON POSITION", "Position");    // used for yoke X zero position calculations (w/o vibrations)
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "YOKE X INDICATOR", "Position");    // used for yoke X zero position calculations (w/o vibrations)
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "Elevator Trim PCT", "Percent Over 100");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "Rudder Trim PCT", "Percent Over 100");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "NUMBER OF ENGINES", "Number");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "PROP MAX RPM PERCENT:1", "Percent");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "PROP MAX RPM PERCENT:2", "Percent");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "ESTIMATED CRUISE SPEED", "Knots");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "AIRSPEED INDICATED", "Knots");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "AUTOPILOT MASTER", "Bool");        // autopilot master on/off
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY X", "Radians per second squared");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY Y", "Radians per second squared");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY Z", "Radians per second squared");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "ENGINE TYPE", "Enum");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "TRAILING EDGE FLAPS LEFT PERCENT", "Percent Over 100");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "TRAILING EDGE FLAPS RIGHT PERCENT", "Percent Over 100");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "WINDSHIELD WIND VELOCITY", "Knots");
-    // addToDataDefinition(hSimConnect, SimDataReadDefinition, "DESIGN TAKEOFF SPEED", "Knots");
+    // aircraft parameters
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "AILERON POSITION", "Position");    // used for yoke X zero position calculations (w/o vibrations)
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "YOKE X INDICATOR", "Position");    // used for yoke X zero position calculations (w/o vibrations)
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "Elevator Trim PCT", "Percent Over 100");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "Rudder Trim PCT", "Percent Over 100");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "NUMBER OF ENGINES", "Number");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "PROP MAX RPM PERCENT:1", "Percent");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "PROP MAX RPM PERCENT:2", "Percent");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "ESTIMATED CRUISE SPEED", "Knots");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "AIRSPEED INDICATED", "Knots");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "AUTOPILOT MASTER", "Bool");        // autopilot master on/off
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY X", "Radians per second squared");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY Y", "Radians per second squared");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "ROTATION ACCELERATION BODY Z", "Radians per second squared");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "ENGINE TYPE", "Enum");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "TRAILING EDGE FLAPS LEFT PERCENT", "Percent Over 100");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "TRAILING EDGE FLAPS RIGHT PERCENT", "Percent Over 100");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "WINDSHIELD WIND VELOCITY", "Knots");
+    addToDataDefinition(hSimConnect, SimDataReadDefinition, "DESIGN TAKEOFF SPEED", "Knots");
 
-    // // simconnect variables for testing
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y POSITION", "Position");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y POSITION WITH AP", "Position");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y INDICATOR", "Position");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR DEFLECTION PCT", "Percent Over 100");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR POSITION", "Position");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR TRIM INDICATOR", "Position");
-    // addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR TRIM PCT", "Percent Over 100");
+    // simconnect variables for testing
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y POSITION", "Position");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y POSITION WITH AP", "Position");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "YOKE Y INDICATOR", "Position");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR DEFLECTION PCT", "Percent Over 100");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR POSITION", "Position");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR TRIM INDICATOR", "Position");
+    addToDataDefinition(hSimConnect, SimDataTestDefinition, "ELEVATOR TRIM PCT", "Percent Over 100");
 
-    // // simconnect variables for setting
-    // addToDataDefinition(hSimConnect, SimDataWriteDefinition, "FLAPS HANDLE INDEX", "Number");
-    // addToDataDefinition(hSimConnect, SimDataWriteDefinition, "YOKE X POSITION", "Position");    // write to simulator as yoke current X position
+    // simconnect variables for setting
+    addToDataDefinition(hSimConnect, SimDataWriteDefinition, "FLAPS HANDLE INDEX", "Number");
+    addToDataDefinition(hSimConnect, SimDataWriteDefinition, "YOKE X POSITION", "Position");    // write to simulator as yoke current X position
 };
 
-// // add data definition for reception from SimConnect server
-// void Simulator::addToDataDefinition(HANDLE hSimConnect, SIMCONNECT_DATA_DEFINITION_ID defineID, std::string datumName, std::string unitsName, SIMCONNECT_DATATYPE datumType)
-// {
-//     HRESULT hr = SimConnect_AddToDataDefinition(hSimConnect, defineID, datumName.c_str(), unitsName.c_str(), datumType);
-//     if (hr == S_OK)
-//     {
-//         std::string text("subscribed to data: ");
-//         text += datumName;
-//         Console::getInstance().log(LogLevel::Debug, text);
-//     }
-//     else
-//     {
-//         std::string text("failed to subscribe to data: ");
-//         text += datumName;
-//         Console::getInstance().log(LogLevel::Error, text);
-//     }
-// }
+// add data definition for reception from SimConnect server
+void Simulator::addToDataDefinition(HANDLE hSimConnect, SIMCONNECT_DATA_DEFINITION_ID defineID, std::string datumName, std::string unitsName, SIMCONNECT_DATATYPE datumType)
+{
+    HRESULT hr = SimConnect_AddToDataDefinition(hSimConnect, defineID, datumName.c_str(), unitsName.c_str(), datumType);
+    if (hr == S_OK)
+    {
+        std::string text("subscribed to data: ");
+        text += datumName;
+        Console::getInstance().log(LogLevel::Debug, text);
+    }
+    else
+    {
+        std::string text("failed to subscribe to data: ");
+        text += datumName;
+        Console::getInstance().log(LogLevel::Error, text);
+    }
+}
 
-// // request all subscribed data from SimConnect server
-// void Simulator::dataRequest(void)
-// {
-//     requestDataOnSimObject(SimDataReadRequest, SimDataReadDefinition, SIMCONNECT_PERIOD_SIM_FRAME);
-//     requestDataOnSimObject(SimDataTestRequest, SimDataTestDefinition, SIMCONNECT_PERIOD_SECOND);
-// }
+// request all subscribed data from SimConnect server
+void Simulator::dataRequest(void)
+{
+    requestDataOnSimObject(SimDataReadRequest, SimDataReadDefinition, SIMCONNECT_PERIOD_SIM_FRAME);
+    requestDataOnSimObject(SimDataTestRequest, SimDataTestDefinition, SIMCONNECT_PERIOD_SECOND);
+}
 
-// // request data from SimConnect server - called from Simulator::dataRequest
-// void Simulator::requestDataOnSimObject(SIMCONNECT_DATA_REQUEST_ID RequestID, SIMCONNECT_DATA_DEFINITION_ID DefineID, SIMCONNECT_PERIOD Period)
-// {
-//     std::stringstream ss;
-//     HRESULT hr = SimConnect_RequestDataOnSimObject(hSimConnect, RequestID, DefineID, SIMCONNECT_OBJECT_ID_USER, Period);
-//     if (hr == S_OK)
-//     {
-//         ss << "request data: def=" << DefineID << ", req=" << RequestID << ", period=" << Period;
-//         Console::getInstance().log(LogLevel::Debug, ss.str());
-//     }
-//     else
-//     {
-//         ss << "data request error: def=" << DefineID << ", req=" << RequestID << ", period=" << Period;
-//         Console::getInstance().log(LogLevel::Error, ss.str());
-//     }
-// }
+// request data from SimConnect server - called from Simulator::dataRequest
+void Simulator::requestDataOnSimObject(SIMCONNECT_DATA_REQUEST_ID RequestID, SIMCONNECT_DATA_DEFINITION_ID DefineID, SIMCONNECT_PERIOD Period)
+{
+    std::stringstream ss;
+    HRESULT hr = SimConnect_RequestDataOnSimObject(hSimConnect, RequestID, DefineID, SIMCONNECT_OBJECT_ID_USER, Period);
+    if (hr == S_OK)
+    {
+        ss << "request data: def=" << DefineID << ", req=" << RequestID << ", period=" << Period;
+        Console::getInstance().log(LogLevel::Debug, ss.str());
+    }
+    else
+    {
+        ss << "data request error: def=" << DefineID << ", req=" << RequestID << ", period=" << Period;
+        Console::getInstance().log(LogLevel::Error, ss.str());
+    }
+}
 
-// // process data received from simulator
-// void Simulator::procesSimData(SIMCONNECT_RECV* pData)
-// {
-//     SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = static_cast<SIMCONNECT_RECV_SIMOBJECT_DATA*>(pData);
-//     std::stringstream ss;
-//     switch (pObjData->dwRequestID)
-//     {
-//     case SimDataReadRequest:
-//         {
-//             auto simDataTime = std::chrono::steady_clock::now();
-//             SimDataRead* pSimDataRead = reinterpret_cast<SimDataRead*>(&pObjData->dwData);
-//             memcpy(&simDataRead, pSimDataRead, sizeof(SimDataRead));
-//             simDataInterval = std::chrono::duration<double>(simDataTime - lastSimDataTime).count();
-//             lastSimDataTime = simDataTime;
-//             processNewData();
-//         }
-//         break;
+// process data received from simulator
+void Simulator::procesSimData(SIMCONNECT_RECV* pData)
+{
+    SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = static_cast<SIMCONNECT_RECV_SIMOBJECT_DATA*>(pData);
+    std::stringstream ss;
+    switch (pObjData->dwRequestID)
+    {
+    case SimDataReadRequest:
+        {
+            auto simDataTime = std::chrono::steady_clock::now();
+            SimDataRead* pSimDataRead = reinterpret_cast<SimDataRead*>(&pObjData->dwData);
+            memcpy(&simDataRead, pSimDataRead, sizeof(SimDataRead));
+            simDataInterval = std::chrono::duration<double>(simDataTime - lastSimDataTime).count();
+            lastSimDataTime = simDataTime;
+            processNewData();
+        }
+        break;
 
-//     case SimDataTestRequest:
-//         // XXX print parameters for test
-//         {
-//             SimDataTest* pVariableCheck = reinterpret_cast<SimDataTest*>(&pObjData->dwData);
-//             //ss << "yYp=" << pVariableCheck->yokeYposition << "  ";
-//             //ss << "yYpAP=" << pVariableCheck->yokeYpositionAP << "  ";
-//             //ss << "yYi=" << pVariableCheck->yokeYindicator << "  ";
-//             //ss << "edPCT=" << pVariableCheck->elevatorDeflectionPCT << "  ";
-//             //ss << "ep=" << pVariableCheck->elevatorPosition << "  ";
-//             //ss << "eti=" << pVariableCheck->elevatorTrimIndicator << "  ";
-//             //ss << "etPCT=" << pVariableCheck->elevatorTrimPCT << "  ";
-//             ss << "aP=" << simDataRead.aileronPosition << "  ";
-//             ss << "yXi=" << simDataRead.yokeXindicator << "  ";
-//             ss << "zero=" << simDataRead.aileronPosition - simDataRead.yokeXindicator  << "  ";
-//             //Console::getInstance().log(LogLevel::Info, ss.str());
-//         }
-//         break;
+    case SimDataTestRequest:
+        // XXX print parameters for test
+        {
+            SimDataTest* pVariableCheck = reinterpret_cast<SimDataTest*>(&pObjData->dwData);
+            //ss << "yYp=" << pVariableCheck->yokeYposition << "  ";
+            //ss << "yYpAP=" << pVariableCheck->yokeYpositionAP << "  ";
+            //ss << "yYi=" << pVariableCheck->yokeYindicator << "  ";
+            //ss << "edPCT=" << pVariableCheck->elevatorDeflectionPCT << "  ";
+            //ss << "ep=" << pVariableCheck->elevatorPosition << "  ";
+            //ss << "eti=" << pVariableCheck->elevatorTrimIndicator << "  ";
+            //ss << "etPCT=" << pVariableCheck->elevatorTrimPCT << "  ";
+            ss << "aP=" << simDataRead.aileronPosition << "  ";
+            ss << "yXi=" << simDataRead.yokeXindicator << "  ";
+            ss << "zero=" << simDataRead.aileronPosition - simDataRead.yokeXindicator  << "  ";
+            //Console::getInstance().log(LogLevel::Info, ss.str());
+        }
+        break;
 
-//     default:
-//         // unexpected data received
-//         ss << "unexpected data received, id=" << pObjData->dwRequestID;
-//         Console::getInstance().log(LogLevel::Warning, ss.str());
-//         break;
-//     }
-// }
+    default:
+        // unexpected data received
+        ss << "unexpected data received, id=" << pObjData->dwRequestID;
+        Console::getInstance().log(LogLevel::Warning, ss.str());
+        break;
+    }
+}
 
 // parse received data from HID device link
 void Simulator::parseReceivedData(std::vector<uint8_t> receivedData)
@@ -284,20 +284,20 @@ void Simulator::parseReceivedData(std::vector<uint8_t> receivedData)
     uint8_t* pData = &receivedData.data()[1];
 
     //currently nothing is set in SimConnect
-    //std::stringstream ss;
-    //HRESULT hr = SimConnect_SetDataOnSimObject(hSimConnect, SimDataWriteDefinition, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(SimDataWriteGen), &simDataWriteGen);
-    //if ((hr != S_OK) && (!simConnectSetError))
-    //{
-    //    ss << "failed to set in simConnect server";
-    //    Console::getInstance().log(LogLevel::Error, ss.str());
-    //    simConnectSetError = true;
-    //}
-    //if ((hr == S_OK) && (simConnectSetError))
-    //{
-    //    ss << "sucseeded to set in simConnect server";
-    //    Console::getInstance().log(LogLevel::Info, ss.str());
-    //    simConnectSetError = false;
-    //}
+    std::stringstream ss;
+    HRESULT hr = SimConnect_SetDataOnSimObject(hSimConnect, SimDataWriteDefinition, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(SimDataWriteGen), &simDataWriteGen);
+    if ((hr != S_OK) && (!simConnectSetError))
+    {
+       ss << "failed to set in simConnect server";
+       Console::getInstance().log(LogLevel::Error, ss.str());
+       simConnectSetError = true;
+    }
+    if ((hr == S_OK) && (simConnectSetError))
+    {
+       ss << "sucseeded to set in simConnect server";
+       Console::getInstance().log(LogLevel::Info, ss.str());
+       simConnectSetError = false;
+    }
 }
 
 // display current data received from SimConnect server

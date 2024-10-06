@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include "SimConnect.h"
 #include "HidDevice.h"
-// #include "Arbiter.h"
+#include "Arbiter.h"
 #include <chrono>
 #include <set>
 #include <vector>
@@ -21,7 +21,7 @@ public:
     Simulator& operator=(Simulator const&) = delete;
     static Simulator& getInstance();
     void handler(void);
-    //static void CALLBACK dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext);
+    static void CALLBACK dispatchWrapper(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext);
     void setHidDevice(HidDevice* pLink) { pHidDeviceLink = pLink; }
     void parseReceivedData(std::vector<uint8_t> receivedData);      // parse received data from HID device link
     void displaySimData();
@@ -29,12 +29,12 @@ public:
 private:
     Simulator();
     ~Simulator();
-    //void dispatch(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext);    // dispatch messages from SimConnect server
+    void dispatch(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext);    // dispatch messages from SimConnect server
     void subscribe(void);       // subscribes to SimConnect data
-    //void addToDataDefinition(HANDLE  hSimConnect, SIMCONNECT_DATA_DEFINITION_ID  defineID, std::string datumName, std::string unitsName, SIMCONNECT_DATATYPE  datumType = SIMCONNECT_DATATYPE_FLOAT64);
+    void addToDataDefinition(HANDLE  hSimConnect, SIMCONNECT_DATA_DEFINITION_ID  defineID, std::string datumName, std::string unitsName, SIMCONNECT_DATATYPE  datumType = SIMCONNECT_DATATYPE_FLOAT64);
     void dataRequest(void);     // requests data from SimConnect server
-    //void requestDataOnSimObject(SIMCONNECT_DATA_REQUEST_ID  RequestID, SIMCONNECT_DATA_DEFINITION_ID  DefineID, SIMCONNECT_PERIOD  Period);
-    //void procesSimData(SIMCONNECT_RECV* pData);     // processes data received from SimConnect server
+    void requestDataOnSimObject(SIMCONNECT_DATA_REQUEST_ID  RequestID, SIMCONNECT_DATA_DEFINITION_ID  DefineID, SIMCONNECT_PERIOD  Period);
+    void procesSimData(SIMCONNECT_RECV* pData);     // processes data received from SimConnect server
     void setSimdataFlag(SimDataFlag flag, bool value);
     void processNewData();  // process received data from SimConnect and prepare for HID device
     HANDLE hSimConnect{ nullptr };
@@ -110,7 +110,7 @@ private:
     SimDataWriteGen simDataWriteGen;      // general data to be written to simulator
     std::chrono::steady_clock::time_point lastHidDeviceSendTime;  // remembers time of last HID device data sending
     static const size_t HidSendBufferSize = 64;
-    uint8_t HidSendBuffer[HidSendBufferSize];
+    uint8_t hidSendBuffer[HidSendBufferSize];
     uint32_t simDataFlags{ 0 };     //bit flags received from simulator
     bool simConnectSetError{ false };   //last attempt to set in SimConnect failed?
     bool simConnectResponseError{ false };  //last connection to SimConnect failed?
