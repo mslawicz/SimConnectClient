@@ -16,7 +16,7 @@ Simulator::Simulator()
     // Console::getInstance().log(LogLevel::Debug, "Simulator object created");
     // lastSimDataTime = lastHidDeviceDataTime = lastHidDeviceSendTime = std::chrono::steady_clock::now();
     // Console::getInstance().registerCommand("simdata", "display last simulator data", std::bind(&Simulator::displaySimData, this));
-    // Console::getInstance().registerCommand("joydata", "display last joystick data", std::bind(&Simulator::displayReceivedHidDeviceData, this));
+    // Console::getInstance().registerCommand("DIDdata", "display last HID device data", std::bind(&Simulator::displayReceivedHidDeviceData, this));
 }
 
 Simulator::~Simulator()
@@ -56,11 +56,11 @@ void Simulator::handler(void)
     //         SimConnect_CallDispatch(hSimConnect, &Simulator::dispatchWrapper, nullptr);
     //     }
 
-    //     //send data to joystick
+    //     //send data to HID device
     //     if (pHidDeviceLink &&
     //         (std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceSendTime).count() > 0.01))
     //     {
-    //         uint8_t* pBuffer = joySendBuffer;
+    //         uint8_t* pBuffer = hidSendBuffer;
     //         placeData<float>(static_cast<float>(simDataRead.aileronPosition - simDataRead.yokeXindicator), pBuffer);    // yoke X reference position
     //         placeData<uint32_t>(simDataFlags, pBuffer);     // 32-bit data flags
     //         placeData<uint8_t>(scale<double, uint8_t>(0, 1.0, simDataCalculated.wingAirSpeed, 0U, 0xFFU), pBuffer);  // aircraft indicated speed referenced to cruise speed <0,255>
@@ -76,7 +76,7 @@ void Simulator::handler(void)
     //         placeData<char>('S', pBuffer);
     //         placeData<char>('I', pBuffer);
     //         placeData<char>('M', pBuffer);
-    //         pHidDeviceLink->sendData(joySendBuffer);
+    //         pHidDeviceLink->sendData(hidSendBuffer);
     //         lastHidDeviceSendTime = std::chrono::steady_clock::now();
     //     }
 
@@ -332,7 +332,7 @@ void Simulator::displaySimData()
 // display current data received from Hid device
 void Simulator::displayReceivedHidDeviceData()
 {
-    std::cout << "time from last joystick reception [s] = " << std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceDataTime).count() << std::endl;
+    std::cout << "time from last HID device reception [s] = " << std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceDataTime).count() << std::endl;
     std::cout << "========== Hid Device Data ==========" << std::endl;
 }
 
@@ -351,7 +351,7 @@ void Simulator::setSimdataFlag(SimDataFlag flag, bool value)
     }
 }
 
-// process received data from SimConnect and prepare for joystick
+// process received data from SimConnect and prepare for HID device
 void Simulator::processNewData()
 {
     setSimdataFlag(SimDataFlag::AutopilotOn, simDataRead.autopilotMaster != 0);    //flag of autopilot master on/off

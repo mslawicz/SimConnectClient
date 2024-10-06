@@ -74,7 +74,7 @@ private:
         double windshieldWindVelocity;  // windshield wind velocity in kts
         double designTakeoffSpeed;      // aircraft design takeoff speed in kts
     };
-    struct JoyData  // data received from HID device
+    struct HidData  // data received from HID device
     {
         float xxx;      // not specified yet
     };
@@ -106,11 +106,11 @@ private:
     std::chrono::steady_clock::time_point lastHidDeviceDataTime;  // remembers time of last HID device data reception
     SimDataRead simDataRead;    // current state of simData
     double simDataInterval{ 0 };    // time between last two simData readouts [s]
-    JoyData joyData{ 0 };    // data received from HID device
+    HidData hidData{ 0 };    // data received from HID device
     SimDataWriteGen simDataWriteGen;      // general data to be written to simulator
     std::chrono::steady_clock::time_point lastHidDeviceSendTime;  // remembers time of last HID device data sending
-    static const size_t JoySendBufferSize = 64;
-    uint8_t joySendBuffer[JoySendBufferSize];
+    static const size_t HidSendBufferSize = 64;
+    uint8_t HidSendBuffer[HidSendBufferSize];
     uint32_t simDataFlags{ 0 };     //bit flags received from simulator
     bool simConnectSetError{ false };   //last attempt to set in SimConnect failed?
     bool simConnectResponseError{ false };  //last connection to SimConnect failed?
