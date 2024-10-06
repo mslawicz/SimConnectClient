@@ -40,7 +40,7 @@ void HidDevice::handler()
     {
         if (isOpen)
         {
-            // check a new data from joystick
+            // check a new data from HID device
             if (isDataReceived())
             {
                 // call reveived data parsing function

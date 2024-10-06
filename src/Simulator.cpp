@@ -14,9 +14,9 @@ Simulator& Simulator::getInstance()
 Simulator::Simulator()
 {
     // Console::getInstance().log(LogLevel::Debug, "Simulator object created");
-    // lastSimDataTime = lastJoystickDataTime = lastJoystickSendTime = std::chrono::steady_clock::now();
+    // lastSimDataTime = lastHidDeviceDataTime = lastHidDeviceSendTime = std::chrono::steady_clock::now();
     // Console::getInstance().registerCommand("simdata", "display last simulator data", std::bind(&Simulator::displaySimData, this));
-    // Console::getInstance().registerCommand("joydata", "display last joystick data", std::bind(&Simulator::displayReceivedJoystickData, this));
+    // Console::getInstance().registerCommand("joydata", "display last joystick data", std::bind(&Simulator::displayReceivedHidDeviceData, this));
 }
 
 Simulator::~Simulator()
@@ -57,8 +57,8 @@ void Simulator::handler(void)
     //     }
 
     //     //send data to joystick
-    //     if (pJoystickLink &&
-    //         (std::chrono::duration<double>(std::chrono::steady_clock::now() - lastJoystickSendTime).count() > 0.01))
+    //     if (pHidDeviceLink &&
+    //         (std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceSendTime).count() > 0.01))
     //     {
     //         uint8_t* pBuffer = joySendBuffer;
     //         placeData<float>(static_cast<float>(simDataRead.aileronPosition - simDataRead.yokeXindicator), pBuffer);    // yoke X reference position
@@ -76,8 +76,8 @@ void Simulator::handler(void)
     //         placeData<char>('S', pBuffer);
     //         placeData<char>('I', pBuffer);
     //         placeData<char>('M', pBuffer);
-    //         pJoystickLink->sendData(joySendBuffer);
-    //         lastJoystickSendTime = std::chrono::steady_clock::now();
+    //         pHidDeviceLink->sendData(joySendBuffer);
+    //         lastHidDeviceSendTime = std::chrono::steady_clock::now();
     //     }
 
     //     std::this_thread::sleep_for(threadSleepTime);
@@ -329,11 +329,11 @@ void Simulator::displaySimData()
     std::cout << "propeller % = " << simDataCalculated.propellerPct << std::endl;
 }
 
-// display current data received from Joystick
-void Simulator::displayReceivedJoystickData()
+// display current data received from Hid device
+void Simulator::displayReceivedHidDeviceData()
 {
     std::cout << "time from last joystick reception [s] = " << std::chrono::duration<double>(std::chrono::steady_clock::now() - lastHidDeviceDataTime).count() << std::endl;
-    std::cout << "========== Joystick Data ==========" << std::endl;
+    std::cout << "========== Hid Device Data ==========" << std::endl;
 }
 
 //set/reset sim data flag

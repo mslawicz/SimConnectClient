@@ -25,7 +25,7 @@ public:
     void setHidDevice(HidDevice* pLink) { pHidDeviceLink = pLink; }
     void parseReceivedData(std::vector<uint8_t> receivedData);      // parse received data from HID device link
     void displaySimData();
-    void displayReceivedJoystickData();
+    void displayReceivedHidDeviceData();
 private:
     Simulator();
     ~Simulator();
