@@ -13,10 +13,10 @@ Simulator& Simulator::getInstance()
 
 Simulator::Simulator()
 {
-    // Console::getInstance().log(LogLevel::Debug, "Simulator object created");
-    // lastSimDataTime = lastHidDeviceDataTime = lastHidDeviceSendTime = std::chrono::steady_clock::now();
-    // Console::getInstance().registerCommand("simdata", "display last simulator data", std::bind(&Simulator::displaySimData, this));
-    // Console::getInstance().registerCommand("DIDdata", "display last HID device data", std::bind(&Simulator::displayReceivedHidDeviceData, this));
+    Console::getInstance().log(LogLevel::Debug, "Simulator object created");
+    lastSimDataTime = lastHidDeviceDataTime = lastHidDeviceSendTime = std::chrono::steady_clock::now();
+    Console::getInstance().registerCommand("simdata", "display last simulator data", std::bind(&Simulator::displaySimData, this));
+    Console::getInstance().registerCommand("HIDdata", "display last HID device data", std::bind(&Simulator::displayReceivedHidDeviceData, this));
 }
 
 Simulator::~Simulator()

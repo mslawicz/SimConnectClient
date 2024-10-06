@@ -31,3 +31,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     user32.lib
     Ws2_32.lib
 )
+
+set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4099")
+
