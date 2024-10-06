@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <functional>
 
+#define ONLY_ONCE   true
+
 enum class LogLevel
 {
     None,
@@ -23,7 +25,7 @@ public:
     Console(Console const&) = delete;
     Console& operator=(Console const&) = delete;
     static Console& getInstance();
-    void log(LogLevel level, std::string message);
+    void log(LogLevel level, std::string message, bool dontRepeat = false);
     void handler(void);
     bool isQuitRequest(void) const { return quitRequest; }
     void registerCommand(std::string command, std::string description, std::function<void(void)> action);

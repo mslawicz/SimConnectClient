@@ -45,8 +45,41 @@ void Console::handler(void)
 
 
 // log message in console window
-void Console::log(LogLevel level, std::string message)
+void Console::log(LogLevel level, std::string message, bool dontRepeat)
 {
+    struct CheckTxt
+    {
+        uint8_t checkSum;
+        uint8_t checkXor;
+    };
+
+    static CheckTxt prevCheck{0, 0};
+    if(dontRepeat)
+    {
+        CheckTxt currentCheck{0, 0};
+        for(auto ch : message)
+        {
+            currentCheck.checkSum += static_cast<uint8_t>(ch);
+            currentCheck.checkXor ^= static_cast<uint8_t>(ch);
+        }
+        if((currentCheck.checkSum != prevCheck.checkSum) || (currentCheck.checkXor != prevCheck.checkXor))
+        {
+            //this is a new message
+            prevCheck.checkSum = currentCheck.checkSum;
+            prevCheck.checkXor = currentCheck.checkXor;
+        }
+        else
+        {
+            //this message is repeated
+            return;
+        }
+    }
+    else
+    {
+        //any message that can be repeated
+        prevCheck = CheckTxt{0, 0};
+    }
+
     int iCurrentLevel = static_cast<int>(currentLevel);
     int iLevel = static_cast<int>(level);
     if ((iLevel <= iCurrentLevel) && (iCurrentLevel > 0))

@@ -271,7 +271,7 @@ bool HidDevice::sendData(uint8_t* dataToSend)
         // if the process is pending, return without action
         if (!overlappedResult && lastError == ERROR_IO_PENDING)
         {
-            Console::getInstance().log(LogLevel::Error, "USB data send error=" + std::to_string(lastError));
+            Console::getInstance().log(LogLevel::Error, "USB data send error=" + std::to_string(lastError) + " (pending)", ONLY_ONCE);
             return false;
         }
         // if the process is not over, but it's not pending (the other error occured)
@@ -280,7 +280,7 @@ bool HidDevice::sendData(uint8_t* dataToSend)
             // reset overlapped data
             memset(&sendOverlappedData, 0, sizeof(sendOverlappedData));
             sendOverlappedData.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-            Console::getInstance().log(LogLevel::Error, "USB data send error=" + std::to_string(lastError));
+            Console::getInstance().log(LogLevel::Error, "USB data send error=" + std::to_string(lastError), ONLY_ONCE);
             if (++sendErrorCounter >= SendErrorLimit)
             {
                 closeConnection();
