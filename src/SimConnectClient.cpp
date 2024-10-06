@@ -3,6 +3,7 @@
 #include "Simulator.h"
 #include <iostream>
 #include <thread>
+#include <functional>
 
 #define VENDOR_ID   0x483
 #define PRODUCT_ID  22369
