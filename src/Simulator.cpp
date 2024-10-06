@@ -1,7 +1,7 @@
 #include "Simulator.h"
-// #include "Console.h"
+#include "Console.h"
 // #include "Convert.h"
-// #include <thread>
+#include <thread>
 #include <sstream>
 #include <iostream>
 
@@ -28,8 +28,8 @@ void Simulator::handler(void)
 {
     // HRESULT hResult;
 
-    // while (!Console::getInstance().isQuitRequest())
-    // {
+    while (!Console::getInstance().isQuitRequest())
+    {
     //     // manage connection to simulator
     //     if (hSimConnect == nullptr)
     //     {
@@ -80,8 +80,8 @@ void Simulator::handler(void)
     //         lastHidDeviceSendTime = std::chrono::steady_clock::now();
     //     }
 
-    //     std::this_thread::sleep_for(threadSleepTime);
-    // }
+        std::this_thread::sleep_for(threadSleepTime);
+    }
 
     // if (hSimConnect)
     // {

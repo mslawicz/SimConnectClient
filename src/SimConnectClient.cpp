@@ -19,11 +19,11 @@ int main()
     //hidDevice.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
     std::thread hidDeviceThread(&HidDevice::handler, &hidDevice);
-    //std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
+    std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
 
     Console::getInstance().handler();
 
-    //simulatorThread.join();
+    simulatorThread.join();
     hidDeviceThread.join();
 
     return 0;
