@@ -3,7 +3,6 @@
 #include "Simulator.h"
 #include <iostream>
 #include <thread>
-//#include <functional>
 
 #define VENDOR_ID   0x483
 #define PRODUCT_ID  22369
@@ -16,7 +15,7 @@ int main()
 
     HidDevice hidDevice(VENDOR_ID, PRODUCT_ID, REPORT_ID);
     Simulator::getInstance().setHidDevice(&hidDevice);
-    //hidDevice.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
+    hidDevice.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
     std::thread hidDeviceThread(&HidDevice::handler, &hidDevice);
     std::thread simulatorThread(&Simulator::handler, &Simulator::getInstance());
