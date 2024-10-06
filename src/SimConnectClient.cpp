@@ -15,7 +15,7 @@ int main()
     Console::getInstance().log(LogLevel::Always, "type 'help' for the list of commands");
 
     HidDevice hidDevice(VENDOR_ID, PRODUCT_ID, REPORT_ID);
-    //Simulator::getInstance().sethidDevice(&hidDevice);
+    Simulator::getInstance().setHidDevice(&hidDevice);
     //hidDevice.setParseFunction(std::bind(&Simulator::parseReceivedData, &Simulator::getInstance(), std::placeholders::_1));
 
     std::thread hidDeviceThread(&HidDevice::handler, &hidDevice);

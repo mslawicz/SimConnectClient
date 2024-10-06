@@ -5,7 +5,7 @@ set(MSFS_SDK "C:/MSFS SDK")
 
 add_executable(SimConnectClient 
     src/SimConnectClient.cpp
-#    src/Simulator.cpp
+    src/Simulator.cpp
     src/HidDevice.cpp
     src/Console.cpp
 )
